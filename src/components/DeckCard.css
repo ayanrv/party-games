@@ -1,0 +1,94 @@
+.deck-card {
+  position: relative;
+  width: 300px;
+  height: 400px;
+  margin: 1rem;
+  cursor: pointer;
+  border-radius: 30px;
+  overflow: hidden;
+  /* По умолчанию -- Desktop "fold" */
+  perspective: 1000px;
+  -webkit-perspective: 1000px; 
+}
+
+/* Изображение */
+.deck-card-image {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; 
+  height: 100%; 
+  z-index: 1;
+  border-radius: 30px;
+  overflow: hidden;
+}
+.deck-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Правая складная часть (Desktop) */
+.deck-card-fold {
+  position: absolute;
+  top: 0; right: 0;
+  width: 60%;        /* 60% скрывает левую часть, 40% img */
+  height: 100%;
+  background-color: #fae2b4;
+
+  transform-style: preserve-3d;
+  transform: rotateY(90deg);
+  -webkit-transform: rotateY(90deg);
+  transform-origin: right center;
+  -webkit-transform-origin: right center;
+  
+  transition: transform 0.6s;
+  -webkit-transition: -webkit-transform 0.6s;
+
+  z-index: 2;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  overflow: hidden;
+}
+
+/* При наведении раскрывается */
+.deck-card:hover .deck-card-fold {
+  transform: rotateY(0);
+  -webkit-transform: rotateY(0);
+}
+
+/* Содержимое */
+.deck-card-fold-content {
+  padding: 1rem;
+  color: #333;
+  text-align: left;
+  overflow-y: auto; /* если текст длинный */
+}
+.deck-card-fold-content h3 {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+.deck-card-fold-content p {
+  margin: 0.3rem 0;
+  color: #555;
+  line-height: 1.4;
+  font-size: 1rem;
+}
+
+/* Адаптивность: для маленьких устройств переопределяем */
+/* Все правила, что ниже, применятся только при max-width:600px */
+@media (max-width: 600px) {
+  .deck-card {
+    width: 180px;    /* существенно меньше */
+    height: 240px;
+    perspective: none; /* убираем 3D? Можно оставить, но hover не так важен */
+  }
+  /* Изображение занимает всю карточку */
+  .deck-card-image {
+    width: 100%;
+    height: 100%;
+  }
+  .deck-card-image img {
+    object-fit: cover;
+  }
+}

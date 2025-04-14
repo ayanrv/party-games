@@ -1,0 +1,16 @@
+/* src/pages/MafiaPage.css */
+.mafia-page {
+  text-align: center;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+}
+
+.mafia-page h1 {
+  color: #800000;
+}
+
+.mafia-page p {
+  font-size: 1.2rem;
+  color: #333;
+}

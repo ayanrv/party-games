@@ -1,0 +1,17 @@
+/* src/pages/CourtPage.css */
+.court-page {
+    text-align: center;
+    padding: 2rem;
+    background-color: #e6f7ff;
+    font-family: Arial, sans-serif;
+  }
+  
+  .court-page h1 {
+    color: #0066cc;
+  }
+  
+  .court-page p {
+    font-size: 1.2rem;
+    color: #333;
+  }
+  

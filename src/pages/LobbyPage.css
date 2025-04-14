@@ -1,0 +1,51 @@
+/* src/pages/LobbyPage.css */
+.lobby-container {
+    width: 90%;
+    max-width: 500px;
+    margin: 2rem auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .lobby-container h1 {
+    margin-bottom: 1rem;
+  }
+  
+  .lobby-container ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .lobby-container li {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+  }
+  
+  .host-badge {
+    color: red;
+    font-weight: bold;
+    margin-left: 0.5rem;
+  }
+  
+  .start-game-btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    transition: background-color 0.3s;
+  }
+  
+  .start-game-btn:hover {
+    background-color: #45a049;
+  }
+  
+  .waiting-msg {
+    margin-top: 1.5rem;
+    color: #777;
+    font-style: italic;
+  }
+  

@@ -1,0 +1,17 @@
+/* src/pages/TruthOrDarePage.css */
+.truth-or-dare-page {
+    text-align: center;
+    padding: 2rem;
+    background-color: #fff7e6;
+    font-family: Arial, sans-serif;
+  }
+  
+  .truth-or-dare-page h1 {
+    color: #cc5500;
+  }
+  
+  .truth-or-dare-page p {
+    font-size: 1.2rem;
+    color: #333;
+  }
+  

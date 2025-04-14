@@ -1,0 +1,32 @@
+.home-container {
+  text-align: center;
+  padding: 2rem;
+  padding-top: 0;
+  background-color: transparent;
+}
+
+.home-game-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 0;
+}
+
+.party-logo {
+  margin: 0;
+  padding: 0;
+  width: 350px;
+  height: 350px;
+}
+
+/* При ширине <=600px: 2 в ряд */
+@media (max-width: 600px) {
+  .home-game-cards {
+    padding: 5px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    justify-items: center;
+  }
+}

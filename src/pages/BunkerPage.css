@@ -1,0 +1,17 @@
+/* src/pages/BunkerPage.css */
+.bunker-page {
+    text-align: center;
+    padding: 2rem;
+    background-color: #eef;
+    font-family: Arial, sans-serif;
+  }
+  
+  .bunker-page h1 {
+    color: #003366;
+  }
+  
+  .bunker-page p {
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
