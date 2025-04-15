@@ -7,10 +7,18 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // Получаем URL из переменной окружения или используем localhost
     const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:3001';
     const newSocket = io(serverUrl);
     setSocket(newSocket);
+    newSocket.on('connect', () => {
+      console.log('Socket connected:', newSocket.id);
+    });
+    newSocket.on('disconnect', (reason) => {
+      console.log('Socket disconnected:', reason);
+    });
+    newSocket.on('connect_error', (error) => {
+      console.error('Socket connection error:', error);
+    });
     return () => newSocket.disconnect();
   }, []);
 
@@ -21,6 +29,4 @@ export const SocketProvider = ({ children }) => {
   );
 };
 
-export const useSocket = () => {
-  return useContext(SocketContext);
-};
+export const useSocket = () => useContext(SocketContext);

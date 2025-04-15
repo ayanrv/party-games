@@ -7,7 +7,7 @@ import { startConfetti } from './confetti';
 import HomePage from './pages/HomePage';
 import RoomSelector from './pages/RoomSelector';
 import LobbyPage from './pages/LobbyPage';
-import MafiaPage from './pages/MafiaPage';
+import MafiaGame from './pages/MafiaGame';
 import BunkerPage from './pages/BunkerPage';
 import TruthOrDarePage from './pages/TruthOrDarePage';
 import CourtPage from './pages/CourtPage';
@@ -28,7 +28,7 @@ function App() {
           {/* Страница лобби комнаты */}
           <Route path="/lobby/:roomCode" element={<LobbyPage />} />
           {/* Страницы конкретных игр */}
-          <Route path="/game/mafia/play" element={<MafiaPage />} />
+          <Route path="/game/mafia/play" element={<MafiaGame />} />
           <Route path="/game/bunker/play" element={<BunkerPage />} />
           <Route path="/game/truth-or-dare/play" element={<TruthOrDarePage />} />
           <Route path="/game/court/play" element={<CourtPage />} />

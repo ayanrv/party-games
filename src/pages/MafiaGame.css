@@ -1,0 +1,177 @@
+/* Контейнер основного экрана – занимает весь экран, фон динамичный */
+.mafia-game-container {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Полупрозрачный оверлей для информации об игре */
+.overlay-panel {
+  width: 80%;
+  max-width: 800px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Заголовок фазы */
+.phase-title {
+  margin-top: 0;
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+}
+
+/* Таймер и информация о роли */
+.timer,
+.role-info {
+  font-size: 1.2rem;
+  color: #555;
+  text-align: center;
+}
+
+/* Секция карточки роли */
+.role-info-section {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.role-card {
+  width: 150px;
+  height: auto;
+  margin-top: 0.5rem;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Секция сообщений */
+.messages {
+  margin-top: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+}
+
+.message {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+/* Список игроков */
+.player-list {
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.player-list h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.player-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.player-list li {
+  margin: 0.3rem 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Контролы для действий и голосования */
+.action-controls,
+.voting-controls {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.action-controls label,
+.voting-controls label {
+  font-size: 1rem;
+  color: #333;
+}
+
+.action-controls select,
+.voting-controls select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.btn {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #4CAF50;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #45a049;
+}
+
+.vote-btn {
+  background-color: #FFC107;
+}
+
+.vote-btn:hover {
+  background-color: #FFB300;
+}
+
+/* Адаптивность: для мобильных устройств */
+@media (max-width: 600px) {
+  .overlay-panel {
+    width: 95%;
+    padding: 1rem;
+  }
+  .phase-title {
+    font-size: 1.5rem;
+  }
+  .timer,
+  .role-info {
+    font-size: 1rem;
+  }
+  .player-list h3 {
+    font-size: 1.1rem;
+  }
+  .message {
+    font-size: 0.9rem;
+  }
+  .action-controls,
+  .voting-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .role-card {
+    width: 120px;
+  }
+}
