@@ -1,55 +1,73 @@
+// client/pages/LobbyPage.jsx
+
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import './LobbyPage.css';
 
 const LobbyPage = () => {
   const { roomCode } = useParams();
-  const location = useLocation();
   const navigate = useNavigate();
-  
-  // Из location.state получаем, является ли игрок хостом, и gameId
-  const { isHost = false, gameId = 'mafia' } = location.state || {};
   const socket = useSocket();
+
   const [players, setPlayers] = useState([]);
+  const [isHost, setIsHost] = useState(false);
+  const [persistentId, setPersistentId] = useState('');
+
+  // ✅ Уникальный ID на вкладку
+  useEffect(() => {
+    let id = sessionStorage.getItem('persistentId');
+    if (!id) {
+      id = 'p_' + crypto.randomUUID().slice(0, 8);
+      sessionStorage.setItem('persistentId', id);
+    }
+    setPersistentId(id);
+  }, []);
 
   useEffect(() => {
-    if (!socket) return;
-    socket.on('playerListUpdate', (data) => {
-      setPlayers(data.players);
+    if (!socket || !persistentId) return;
+
+    socket.on('playerListUpdate', ({ players }) => {
+      setPlayers(players);
+      const me = players.find(p => p.persistentId === persistentId);
+      setIsHost(!!me?.isHost);
     });
-    socket.on('gameStarted', (data) => {
-      console.log("DEBUG: Received gameStarted event with", data);
-      navigate(`/game/mafia/play`, { state: { roomCode } });
+
+    socket.on('gameStarted', ({ gameId }) => {
+      navigate(`/game/${gameId}/play`, { state: { roomCode } });
     });
-    socket.on('error', (msg) => {
-      alert(msg);
-    });
+
+    socket.on('error', (msg) => alert(msg));
+
     return () => {
       socket.off('playerListUpdate');
       socket.off('gameStarted');
       socket.off('error');
     };
-  }, [socket, navigate, roomCode]);
+  }, [socket, persistentId]);
 
   const handleStartGame = () => {
-    console.log("DEBUG: Start Game button clicked. Emitting startGame with roomCode =", roomCode);
-    if (socket) {
-      socket.emit('startGame', { roomCode });
-    }
+    if (!socket) return;
+    socket.emit('startGame', { roomCode });
   };
 
   return (
     <div className="lobby-container">
-      <h1>Room Code: {roomCode}</h1>
+      <h1>
+        Room Code: <span className="room-code">{roomCode}</span>
+      </h1>
+
       <h2>Players:</h2>
-      <ul>
-        {players.map((p, idx) => (
-          <li key={idx}>
-            {p.name} {p.isHost && <span className="host-badge">(Host)</span>}
+      <ul className="players-list">
+        {players.map((p) => (
+          <li key={p.persistentId} className={p.persistentId === persistentId ? 'you' : ''}>
+            {p.name}
+            {p.isHost && <span className="host-badge"> (Host)</span>}
+            {p.persistentId === persistentId && <span className="you-tag"> (You)</span>}
           </li>
         ))}
       </ul>
+
       {isHost ? (
         <button className="start-game-btn" onClick={handleStartGame}>
           Start Game

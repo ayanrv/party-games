@@ -179,6 +179,7 @@
   width: 80px;
 }
 
+
 /* Адаптивность: если ширина <=600px, элементы идут в столбик */
 @media (max-width: 600px) {
   .room-selector-card {

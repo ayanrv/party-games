@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import './RoomSelector.css';
@@ -30,123 +30,135 @@ const RoomSelector = () => {
   const [displayName, setDisplayName] = useState('');
   const [roomCodeInput, setRoomCodeInput] = useState('');
   const [showJoinInput, setShowJoinInput] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
 
-  // Проверяем, мобильное ли устройство (ширина <= 600px)
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 600);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+  // ❗ Уникальный ID для каждой вкладки
+  const persistentId = useMemo(() => {
+    let id = sessionStorage.getItem('persistentId');
+    if (!id) {
+      id = 'p_' + Math.random().toString(36).slice(2, 10);
+      sessionStorage.setItem('persistentId', id);
+    }
+    return id;
   }, []);
 
-  // Подписываемся на события сокета
+  useEffect(() => {
+    const updateMobile = () => setIsMobile(window.innerWidth <= 600);
+    window.addEventListener('resize', updateMobile);
+    return () => window.removeEventListener('resize', updateMobile);
+  }, []);
+
   useEffect(() => {
     if (!socket) return;
-    socket.off('roomJoinedSuccessfully');
+
     socket.on('roomJoinedSuccessfully', (data) => {
       navigate(`/lobby/${data.roomCode}`, {
-        state: { isHost: data.isHost, gameId: data.gameId, displayName }
+        state: {
+          gameId: data.gameId,
+        }
       });
     });
-    socket.on('error', (msg) => {
-      alert(msg);
-    });
+
+    socket.on('error', (msg) => alert(msg));
+
     return () => {
       socket.off('roomJoinedSuccessfully');
       socket.off('error');
     };
-  }, [socket, navigate, displayName, gameId]);
+  }, [socket, navigate]);
 
-  // Создать комнату
+  const validateName = () => {
+    const name = displayName.trim();
+    if (!name) {
+      alert('Please enter your name.');
+      return false;
+    }
+    if (name.length < 2 || name.length > 20) {
+      alert('Name must be 2-20 characters.');
+      return false;
+    }
+    return true;
+  };
+
   const handleCreateRoom = () => {
-    if (!displayName.trim()) {
-      alert('Please enter your name.');
-      return;
-    }
-    socket.emit('createRoom', { gameId, name: displayName });
+    if (!validateName() || !socket) return;
+    socket.emit('createRoom', {
+      gameId,
+      name: displayName.trim(),
+      persistentId
+    });
   };
 
-  // Показать/скрыть поле ввода кода комнаты
-  const handleToggleJoin = () => {
-    setShowJoinInput(!showJoinInput);
-  };
-
-  // Присоединение к комнате
   const handleJoinRoom = () => {
-    if (!displayName.trim()) {
-      alert('Please enter your name.');
-      return;
-    }
+    if (!validateName() || !socket) return;
     if (roomCodeInput.length !== 4) {
-      alert('Room code must be exactly 4 letters.');
+      alert('Room code must be 4 characters.');
       return;
     }
-    socket.emit('joinRoom', { roomCode: roomCodeInput.toUpperCase(), name: displayName });
+    socket.emit('joinRoom', {
+      roomCode: roomCodeInput.toUpperCase(),
+      name: displayName.trim(),
+      persistentId
+    });
   };
 
   return (
     <div className="room-selector-wrapper">
-      {/* Карточка со всем интерфейсом */}
       <div className="room-selector-card">
-        {/* Левая часть: Ayasha, диалог и поле "имя" */}
         <div className="left-section">
           <div className="ayasha-block">
-            <img
-              src="/images/ayasha.png"
-              alt="Ayasha"
-              className="ayasha-image"
-            />
+            <img src="/images/ayasha.png" alt="Ayasha" className="ayasha-image" />
             <div className="dialog-bubble">
               <p>
-                Join or create the room and have fun playing {' '}
-                <strong>{gameId.charAt(0).toUpperCase() + gameId.slice(1)}</strong>!
+                Join or create a room and play <strong>{gameId.charAt(0).toUpperCase() + gameId.slice(1)}</strong>!
               </p>
             </div>
           </div>
+
           <div className="name-section">
             <input
               type="text"
               placeholder="My name is Ayasha, and yours?"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
+              maxLength={20}
             />
           </div>
         </div>
 
-        {/* Правая часть: описание (только мобиль) + кнопки + поле кода */}
         <div className="right-section">
-          <h1>{gameId.charAt(0).toUpperCase() + gameId.slice(1)} - Room Options</h1>
+          <h1>{gameId.charAt(0).toUpperCase() + gameId.slice(1)} Room Options</h1>
+
           {isMobile && (
             <div className="mobile-game-details">
-              <p><strong>Description:</strong> {gameDetails[gameId].description}</p>
-              <p><strong>Rules:</strong> {gameDetails[gameId].rules}</p>
+              <p><strong>Description:</strong> {gameDetails[gameId]?.description}</p>
+              <p><strong>Rules:</strong> {gameDetails[gameId]?.rules}</p>
             </div>
           )}
+
           <div className="selector-buttons">
-            <button onClick={handleCreateRoom} className="btn primary">
-              Create Room
-            </button>
-            <button onClick={handleToggleJoin} className="btn secondary">
+            <button onClick={handleCreateRoom} className="btn primary">Create Room</button>
+            <button
+              onClick={() => setShowJoinInput(prev => !prev)}
+              className="btn secondary"
+            >
               {showJoinInput ? 'Cancel Join' : 'Join Room'}
             </button>
           </div>
+
           {showJoinInput && (
             <div className="join-section">
               <input
                 type="text"
-                placeholder="Enter room code (4 letters) "
+                placeholder="Enter room code (4 letters)"
                 value={roomCodeInput}
                 onChange={(e) => {
-                  let val = e.target.value.toUpperCase();
+                  const val = e.target.value.toUpperCase();
                   if (val.length <= 4) setRoomCodeInput(val);
                 }}
+                maxLength={4}
               />
-              <button onClick={handleJoinRoom} className="btn tertiary">
-                Join
-              </button>
+              <button onClick={handleJoinRoom} className="btn tertiary">Join</button>
             </div>
           )}
         </div>

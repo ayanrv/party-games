@@ -52,3 +52,31 @@
   color: #555;
   margin-top: 1rem;
 }
+
+.room-code {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.players-list {
+  list-style: none;
+  padding: 0;
+}
+
+.you {
+  background-color: #e8f7ff;
+  border-left: 4px solid #17a2b8;
+  padding: 4px 8px;
+  margin: 4px 0;
+  font-weight: bold;
+}
+
+.host-badge {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+.you-tag {
+  color: #17a2b8;
+  font-weight: bold;
+}
